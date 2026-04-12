@@ -4,7 +4,7 @@
 
 /**
  * Fetches extension stats from the VS Code Marketplace.
- * Uses flag 0x1 (IncludeVersions) | 0x400 (IncludeStatistics).
+ * Flags: 0x1 (IncludeVersions) | 0x200 (IncludeStatistics).
  *
  * @param {string} extensionId  e.g. "JoernBerkefeld.sfmc-language"
  * @returns {Promise<{installCount: number, latestVersion: string, weightedRating: number} | null>}
@@ -14,14 +14,13 @@ export async function fetchMarketplaceStats(extensionId) {
         filters: [
             {
                 criteria: [
-                    { filterType: 8, value: 'Microsoft.VisualStudio.Code' },
                     { filterType: 7, value: extensionId },
                 ],
                 pageNumber: 1,
                 pageSize: 1,
             },
         ],
-        flags: 0x1 | 0x400, // IncludeVersions | IncludeStatistics
+        flags: 0x1 | 0x200, // IncludeVersions | IncludeStatistics
     };
 
     const res = await fetch(
