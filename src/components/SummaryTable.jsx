@@ -1,46 +1,69 @@
 import { useState } from 'react';
+import { REPOS } from '../data/repos.js';
 
 function fmt(n) {
     if (n == null) return '—';
     return Number(n).toLocaleString('en-US');
 }
 
-const COLS = [
+// ─── npm packages summary table ──────────────────────────────────────────────
+
+const NPM_COLS = [
     { key: 'label', label: 'Package', align: 'left' },
     { key: 'stars', label: '⭐', align: 'right' },
     { key: 'views14d', label: 'Views 14d', align: 'right' },
     { key: 'clones14d', label: 'Clones 14d', align: 'right' },
     { key: 'dlWeek', label: 'DL/wk', align: 'right' },
     { key: 'dlMonth', label: 'DL/mo', align: 'right' },
-    { key: 'installs', label: '⬇ Installs', align: 'right' },
 ];
 
-function extractRow(entry) {
-    const { label, result } = entry;
-    const gh = result?.github;
-    const npm = result?.npm;
-    const mkt = result?.marketplace;
-    const ovsx = result?.openVsxData;
-
+function extractNpmRow(entry) {
+    const gh = entry.result?.github;
+    const npm = entry.result?.npm;
     return {
-        label,
+        label: entry.label,
         stars: gh?.stars ?? null,
         views14d: gh?.traffic?.views?.totalCount ?? null,
         clones14d: gh?.traffic?.clones?.totalCount ?? null,
         dlWeek: npm?.downloads?.lastWeek ?? null,
         dlMonth: npm?.downloads?.lastMonth ?? null,
-        installs:
-            mkt?.installCount != null
-                ? mkt.installCount
-                : ovsx?.downloadCount != null
-                  ? ovsx.downloadCount
-                  : null,
     };
 }
 
-export default function SummaryTable({ entries }) {
-    const [sortKey, setSortKey] = useState('stars');
-    const [sortDir, setSortDir] = useState('desc');
+// ─── VS Code extensions summary table ────────────────────────────────────────
+
+const VSCE_COLS = [
+    { key: 'label', label: 'Extension', align: 'left' },
+    { key: 'stars', label: '⭐', align: 'right' },
+    { key: 'marketplaceInstalls', label: 'Marketplace', align: 'right' },
+    { key: 'openVsxDl', label: 'Open VSX', align: 'right' },
+    { key: 'latestVersion', label: 'Version', align: 'right' },
+];
+
+function extractVsceRow(entry) {
+    const gh = entry.result?.github;
+    const mkt = entry.result?.marketplace;
+    const ovsx = entry.result?.openVsxData;
+    return {
+        label: entry.label,
+        stars: gh?.stars ?? null,
+        // marketplace installCount is null when stats were absent (no auth token)
+        marketplaceInstalls: mkt?.hasStats ? mkt.installCount : null,
+        openVsxDl: ovsx?.downloadCount ?? null,
+        latestVersion: mkt?.latestVersion || ovsx?.version || null,
+        // sort key: prefer marketplace installs, fall back to open vsx
+        _sortInstalls:
+            mkt?.hasStats && mkt.installCount != null
+                ? mkt.installCount
+                : (ovsx?.downloadCount ?? null),
+    };
+}
+
+// ─── generic sortable table ───────────────────────────────────────────────────
+
+function SortableTable({ title, cols, rows, defaultSort, defaultDir = 'desc', badge }) {
+    const [sortKey, setSortKey] = useState(defaultSort);
+    const [sortDir, setSortDir] = useState(defaultDir);
 
     function handleSort(key) {
         if (sortKey === key) {
@@ -51,31 +74,41 @@ export default function SummaryTable({ entries }) {
         }
     }
 
-    const rows = entries
-        .filter((e) => e.result?.status === 'done')
-        .map(extractRow)
-        .sort((a, b) => {
-            const av = a[sortKey];
-            const bv = b[sortKey];
-            if (sortKey === 'label') {
-                return sortDir === 'asc'
-                    ? a.label.localeCompare(b.label)
-                    : b.label.localeCompare(a.label);
-            }
-            const an = av ?? -1;
-            const bn = bv ?? -1;
-            return sortDir === 'asc' ? an - bn : bn - an;
-        });
+    const sorted = [...rows].sort((a, b) => {
+        // use _sortInstalls override when sorting by marketplaceInstalls
+        const aKey = sortKey === 'marketplaceInstalls' ? '_sortInstalls' : sortKey;
+        const bKey = sortKey === 'marketplaceInstalls' ? '_sortInstalls' : sortKey;
+        const av = a[aKey];
+        const bv = b[bKey];
+        if (sortKey === 'label' || sortKey === 'latestVersion') {
+            const as = String(av ?? '');
+            const bs = String(bv ?? '');
+            return sortDir === 'asc' ? as.localeCompare(bs) : bs.localeCompare(as);
+        }
+        const an = av ?? -1;
+        const bn = bv ?? -1;
+        return sortDir === 'asc' ? an - bn : bn - an;
+    });
 
-    if (rows.length === 0) return null;
+    if (sorted.length === 0) return null;
 
     return (
         <div className="bg-gray-900 rounded-xl border border-gray-800 overflow-hidden mb-6">
+            <div className="px-4 py-2.5 border-b border-gray-800 flex items-center gap-2">
+                <h2 className="text-xs font-semibold uppercase tracking-wider text-gray-400">
+                    {title}
+                </h2>
+                {badge && (
+                    <span className="text-xs px-1.5 py-0.5 rounded bg-gray-800 text-gray-500 border border-gray-700">
+                        {badge}
+                    </span>
+                )}
+            </div>
             <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                     <thead>
                         <tr className="border-b border-gray-800">
-                            {COLS.map((col) => (
+                            {cols.map((col) => (
                                 <th
                                     key={col.key}
                                     onClick={() => handleSort(col.key)}
@@ -94,39 +127,64 @@ export default function SummaryTable({ entries }) {
                         </tr>
                     </thead>
                     <tbody>
-                        {rows.map((row, i) => (
+                        {sorted.map((row, i) => (
                             <tr
                                 key={row.label}
                                 className={`border-b border-gray-800/50 hover:bg-gray-800/40 ${
                                     i % 2 === 0 ? '' : 'bg-gray-900/60'
                                 }`}
                             >
-                                <td className="px-3 py-2 font-medium text-gray-200 whitespace-nowrap">
-                                    {row.label}
-                                </td>
-                                <td className="px-3 py-2 text-right text-gray-300 font-mono">
-                                    {fmt(row.stars)}
-                                </td>
-                                <td className="px-3 py-2 text-right text-gray-300 font-mono">
-                                    {fmt(row.views14d)}
-                                </td>
-                                <td className="px-3 py-2 text-right text-gray-300 font-mono">
-                                    {fmt(row.clones14d)}
-                                </td>
-                                <td className="px-3 py-2 text-right text-gray-300 font-mono">
-                                    {fmt(row.dlWeek)}
-                                </td>
-                                <td className="px-3 py-2 text-right text-gray-300 font-mono">
-                                    {fmt(row.dlMonth)}
-                                </td>
-                                <td className="px-3 py-2 text-right text-gray-300 font-mono">
-                                    {fmt(row.installs)}
-                                </td>
+                                {cols.map((col) => (
+                                    <td
+                                        key={col.key}
+                                        className={`px-3 py-2 font-mono text-gray-300 whitespace-nowrap ${
+                                            col.align === 'right' ? 'text-right' : 'text-left font-sans font-medium text-gray-200'
+                                        }`}
+                                    >
+                                        {col.key === 'latestVersion' && row[col.key]
+                                            ? `v${row[col.key]}`
+                                            : fmt(row[col.key])}
+                                    </td>
+                                ))}
                             </tr>
                         ))}
                     </tbody>
                 </table>
             </div>
         </div>
+    );
+}
+
+// ─── public export ────────────────────────────────────────────────────────────
+
+export default function SummaryTable({ entries, hasVsceToken }) {
+    const done = entries.filter((e) => e.result?.status === 'done');
+
+    const npmEntries = done.filter((e) => e.npmPackage && !e.vsceId);
+    const vsceEntries = done.filter((e) => e.vsceId);
+
+    const npmRows = npmEntries.map(extractNpmRow);
+    const vsceRows = vsceEntries.map(extractVsceRow);
+
+    const vsceBadge = hasVsceToken
+        ? 'VS Marketplace installs'
+        : 'Open VSX downloads (add Azure DevOps PAT for Marketplace installs)';
+
+    return (
+        <>
+            <SortableTable
+                title="npm Packages"
+                cols={NPM_COLS}
+                rows={npmRows}
+                defaultSort="dlWeek"
+            />
+            <SortableTable
+                title="VS Code Extensions"
+                cols={VSCE_COLS}
+                rows={vsceRows}
+                defaultSort="marketplaceInstalls"
+                badge={vsceRows.length > 0 ? vsceBadge : undefined}
+            />
+        </>
     );
 }
