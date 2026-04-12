@@ -109,7 +109,9 @@ export default function Dashboard({ token, userLogin, onClearToken }) {
         setTimeout(() => fetchAll(), 0);
     }
 
-    const entries = REPOS.map((r) => ({ ...r, result: results[r.key] }));
+    const entries = [...REPOS]
+        .sort((a, b) => a.label.localeCompare(b.label))
+        .map((r) => ({ ...r, result: results[r.key] }));
     const doneCount = entries.filter((e) => e.result?.status === 'done').length;
 
     return (
