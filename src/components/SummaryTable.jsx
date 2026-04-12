@@ -47,15 +47,10 @@ function extractVsceRow(entry) {
     return {
         label: entry.label,
         stars: gh?.stars ?? null,
-        // marketplace installCount is null when stats were absent (no auth token)
-        marketplaceInstalls: mkt?.hasStats ? mkt.installCount : null,
+        marketplaceInstalls: mkt?.installCount ?? null,
         openVsxDl: ovsx?.downloadCount ?? null,
         latestVersion: mkt?.latestVersion || ovsx?.version || null,
-        // sort key: prefer marketplace installs, fall back to open vsx
-        _sortInstalls:
-            mkt?.hasStats && mkt.installCount != null
-                ? mkt.installCount
-                : (ovsx?.downloadCount ?? null),
+        _sortInstalls: mkt?.installCount ?? ovsx?.downloadCount ?? null,
     };
 }
 
@@ -157,7 +152,7 @@ function SortableTable({ title, cols, rows, defaultSort, defaultDir = 'desc', ba
 
 // ─── public export ────────────────────────────────────────────────────────────
 
-export default function SummaryTable({ entries, hasVsceToken }) {
+export default function SummaryTable({ entries }) {
     const done = entries.filter((e) => e.result?.status === 'done');
 
     const npmEntries = done.filter((e) => e.npmPackage && !e.vsceId);
@@ -165,10 +160,6 @@ export default function SummaryTable({ entries, hasVsceToken }) {
 
     const npmRows = npmEntries.map(extractNpmRow);
     const vsceRows = vsceEntries.map(extractVsceRow);
-
-    const vsceBadge = hasVsceToken
-        ? 'VS Marketplace installs'
-        : 'Open VSX downloads (add Azure DevOps PAT for Marketplace installs)';
 
     return (
         <>
@@ -183,7 +174,6 @@ export default function SummaryTable({ entries, hasVsceToken }) {
                 cols={VSCE_COLS}
                 rows={vsceRows}
                 defaultSort="marketplaceInstalls"
-                badge={vsceRows.length > 0 ? vsceBadge : undefined}
             />
         </>
     );

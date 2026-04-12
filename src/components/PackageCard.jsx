@@ -173,16 +173,10 @@ export default function PackageCard({ entry }) {
                         <Section title="VS Marketplace" color="purple">
                             {marketplace ? (
                                 <>
-                                    {marketplace.hasStats ? (
-                                        <StatRow
-                                            label="Installs"
-                                            value={fmt(marketplace.installCount)}
-                                        />
-                                    ) : (
-                                        <p className="text-gray-600 text-xs">
-                                            Installs: add Azure DevOps PAT in settings
-                                        </p>
-                                    )}
+                                    <StatRow
+                                        label="Installs"
+                                        value={fmt(marketplace.installCount)}
+                                    />
                                     {marketplace.latestVersion && (
                                         <StatRow
                                             label="Version"
