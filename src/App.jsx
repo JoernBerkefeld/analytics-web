@@ -4,23 +4,33 @@ import Dashboard from './components/Dashboard.jsx';
 
 const TOKEN_KEY = 'sfmc_analytics_gh_pat';
 const LOGIN_KEY = 'sfmc_analytics_gh_login';
+const VSCE_KEY = 'sfmc_analytics_vsce_pat';
 
 export default function App() {
     const [token, setToken] = useState(() => localStorage.getItem(TOKEN_KEY) || '');
     const [userLogin, setUserLogin] = useState(() => localStorage.getItem(LOGIN_KEY) || '');
+    const [vsceToken, setVsceToken] = useState(() => localStorage.getItem(VSCE_KEY) || '');
 
-    function handleTokenSave(t, login) {
-        localStorage.setItem(TOKEN_KEY, t);
+    function handleTokenSave(gh, login, vsce) {
+        localStorage.setItem(TOKEN_KEY, gh);
         if (login) localStorage.setItem(LOGIN_KEY, login);
-        setToken(t);
+        if (vsce) {
+            localStorage.setItem(VSCE_KEY, vsce);
+        } else {
+            localStorage.removeItem(VSCE_KEY);
+        }
+        setToken(gh);
         setUserLogin(login || '');
+        setVsceToken(vsce || '');
     }
 
     function handleTokenClear() {
         localStorage.removeItem(TOKEN_KEY);
         localStorage.removeItem(LOGIN_KEY);
+        localStorage.removeItem(VSCE_KEY);
         setToken('');
         setUserLogin('');
+        setVsceToken('');
     }
 
     if (!token) {
@@ -28,6 +38,11 @@ export default function App() {
     }
 
     return (
-        <Dashboard token={token} userLogin={userLogin} onClearToken={handleTokenClear} />
+        <Dashboard
+            token={token}
+            vsceToken={vsceToken || null}
+            userLogin={userLogin}
+            onClearToken={handleTokenClear}
+        />
     );
 }
