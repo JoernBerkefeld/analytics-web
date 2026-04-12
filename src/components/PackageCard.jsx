@@ -68,6 +68,7 @@ export default function PackageCard({ entry }) {
 
     return (
         <div
+            id={`card-${entry.key}`}
             className={`bg-gray-900 rounded-xl border p-4 transition-opacity ${
                 isLoading ? 'opacity-60' : 'opacity-100'
             } ${isError ? 'border-red-900' : 'border-gray-800'}`}
@@ -96,11 +97,6 @@ export default function PackageCard({ entry }) {
                     {vsceUrl && (
                         <a href={vsceUrl} target="_blank" rel="noopener noreferrer">
                             <Badge color="blue">VSX</Badge>
-                        </a>
-                    )}
-                    {ovsxUrl && (
-                        <a href={ovsxUrl} target="_blank" rel="noopener noreferrer">
-                            <Badge color="teal">OVSX</Badge>
                         </a>
                     )}
                     {ovsxUrl && (

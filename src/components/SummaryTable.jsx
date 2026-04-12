@@ -21,6 +21,7 @@ function extractNpmRow(entry) {
     const gh = entry.result?.github;
     const npm = entry.result?.npm;
     return {
+        key: entry.key,
         label: entry.label,
         stars: gh?.stars ?? null,
         views14d: gh?.traffic?.views?.totalCount ?? null,
@@ -45,6 +46,7 @@ function extractVsceRow(entry) {
     const mkt = entry.result?.marketplace;
     const ovsx = entry.result?.openVsxData;
     return {
+        key: entry.key,
         label: entry.label,
         stars: gh?.stars ?? null,
         marketplaceInstalls: mkt?.installCount ?? null,
@@ -136,11 +138,24 @@ function SortableTable({ title, cols, rows, defaultSort, defaultDir = 'desc', ba
                                             col.align === 'right' ? 'text-right' : 'text-left font-sans font-medium text-gray-200'
                                         }`}
                                     >
-                                        {col.key === 'label'
-                                            ? row[col.key]
-                                            : col.key === 'latestVersion' && row[col.key]
-                                              ? `v${row[col.key]}`
-                                              : fmt(row[col.key])}
+                                        {col.key === 'label' ? (
+                                            <a
+                                                href={`#card-${row.key}`}
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    document
+                                                        .getElementById(`card-${row.key}`)
+                                                        ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                                                }}
+                                                className="hover:text-blue-400 cursor-pointer"
+                                            >
+                                                {row[col.key]}
+                                            </a>
+                                        ) : col.key === 'latestVersion' && row[col.key] ? (
+                                            `v${row[col.key]}`
+                                        ) : (
+                                            fmt(row[col.key])
+                                        )}
                                     </td>
                                 ))}
                             </tr>
