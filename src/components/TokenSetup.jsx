@@ -28,7 +28,7 @@ export default function TokenSetup({ onSave }) {
             <div className="w-full max-w-md">
                 <div className="text-center mb-8">
                     <div className="text-5xl mb-3">📊</div>
-                    <h1 className="text-2xl font-bold text-white">SFMC Analytics</h1>
+                    <h1 className="text-2xl font-bold text-white">Project Analytics</h1>
                     <p className="text-gray-400 mt-2 text-sm">
                         Enter your GitHub Personal Access Token to continue.
                     </p>

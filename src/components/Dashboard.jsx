@@ -121,7 +121,7 @@ export default function Dashboard({ token, userLogin, onClearToken }) {
                         <span className="text-xl">📊</span>
                         <div className="min-w-0">
                             <h1 className="text-base font-bold text-white leading-none">
-                                SFMC Analytics
+                                Project Analytics
                             </h1>
                             {fetchedAt && (
                                 <p className="text-xs text-gray-500 mt-0.5">
