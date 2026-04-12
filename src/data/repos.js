@@ -126,8 +126,8 @@ export const REPOS = [
         owner: 'Accenture',
         repo: 'sfmc-devtools-vscode',
         npmPackage: null,
-        vsceId: 'Accenture.sfmc-devtools-vscode',
-        openVsx: { namespace: 'Accenture', name: 'sfmc-devtools-vscode' },
+        vsceId: 'Accenture-oss.sfmc-devtools-vscode',
+        openVsx: { namespace: 'Accenture-oss', name: 'sfmc-devtools-vscode' },
     },
     {
         key: 'sfmc-devtools',
