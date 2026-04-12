@@ -1,0 +1,20 @@
+{
+  "name": "Project Analytics",
+  "short_name": "Analytics",
+  "description": "Personal package & extension analytics dashboard",
+  "start_url": "/analytics-web/",
+  "scope": "/analytics-web/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#030712",
+  "theme_color": "#030712",
+  "categories": ["developer", "productivity"],
+  "icons": [
+    {
+      "src": "/analytics-web/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

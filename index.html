@@ -4,10 +4,28 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="robots" content="noindex, nofollow" />
-        <title>SFMC Analytics</title>
+        <title>Project Analytics</title>
+
+        <!-- PWA -->
+        <link rel="manifest" href="/analytics-web/manifest.webmanifest" />
+        <meta name="theme-color" content="#030712" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-title" content="Analytics" />
+        <link rel="icon" type="image/svg+xml" href="/analytics-web/icon.svg" />
+        <link rel="apple-touch-icon" href="/analytics-web/icon.svg" />
     </head>
     <body>
         <div id="root"></div>
         <script type="module" src="/src/main.jsx"></script>
+        <script>
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('/analytics-web/sw.js', {
+                        scope: '/analytics-web/',
+                    });
+                });
+            }
+        </script>
     </body>
 </html>

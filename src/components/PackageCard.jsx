@@ -62,6 +62,9 @@ export default function PackageCard({ entry }) {
     const vsceUrl = vsceId
         ? `https://marketplace.visualstudio.com/items?itemName=${vsceId}`
         : null;
+    const ovsxUrl = openVsx
+        ? `https://open-vsx.org/extension/${openVsx.namespace}/${openVsx.name}`
+        : null;
 
     return (
         <div
@@ -93,6 +96,16 @@ export default function PackageCard({ entry }) {
                     {vsceUrl && (
                         <a href={vsceUrl} target="_blank" rel="noopener noreferrer">
                             <Badge color="blue">VSX</Badge>
+                        </a>
+                    )}
+                    {ovsxUrl && (
+                        <a href={ovsxUrl} target="_blank" rel="noopener noreferrer">
+                            <Badge color="teal">OVSX</Badge>
+                        </a>
+                    )}
+                    {ovsxUrl && (
+                        <a href={ovsxUrl} target="_blank" rel="noopener noreferrer">
+                            <Badge color="teal">OVSX</Badge>
                         </a>
                     )}
                 </div>
