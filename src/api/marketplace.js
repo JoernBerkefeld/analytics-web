@@ -1,25 +1,20 @@
 /**
  * VS Code Marketplace gallery API + Open VSX client (browser-compatible).
  *
- * Statistics require an Azure DevOps PAT (Marketplace Read scope).
- * Without a token the API still returns the extension record but omits the
- * statistics array, so install counts will be missing.
- *
- * How to get a token:
- *   https://dev.azure.com → User settings → Personal access tokens
- *   → New Token → Scope: Marketplace (Read)
+ * Statistics are publicly available without authentication when the correct
+ * flags and api-version are used:
+ *   flags = 0x1 (IncludeVersions) | 0x100 (IncludeStatistics) = 257
+ *   Accept: application/json; charset=utf-8; api-version=7.2-preview.1
  */
 
 /**
  * Fetches extension stats from the VS Code Marketplace.
- * Statistics are only returned when a valid Azure DevOps PAT is supplied.
- * Flags: 0x1 (IncludeVersions) | 0x200 (IncludeStatistics).
+ * No authentication required — statistics are returned publicly.
  *
  * @param {string} extensionId  e.g. "JoernBerkefeld.sfmc-language"
- * @param {string|null} [token]  Azure DevOps PAT with Marketplace Read scope
- * @returns {Promise<{installCount: number|null, latestVersion: string, weightedRating: number}>}
+ * @returns {Promise<{installCount: number, latestVersion: string, weightedRating: number}>}
  */
-export async function fetchMarketplaceStats(extensionId, token = null) {
+export async function fetchMarketplaceStats(extensionId) {
     const body = {
         filters: [
             {
@@ -28,21 +23,19 @@ export async function fetchMarketplaceStats(extensionId, token = null) {
                 pageSize: 1,
             },
         ],
-        flags: 0x1 | 0x200, // IncludeVersions | IncludeStatistics
+        flags: 0x1 | 0x100, // IncludeVersions | IncludeStatistics
     };
-
-    const headers = {
-        'Content-Type': 'application/json',
-        Accept: 'application/json;api-version=3.0-preview.1',
-    };
-    if (token) {
-        // Azure DevOps PAT format: Basic base64(':PAT')
-        headers['Authorization'] = `Basic ${btoa(`:${token}`)}`;
-    }
 
     const res = await fetch(
         'https://marketplace.visualstudio.com/_apis/public/gallery/extensionquery',
-        { method: 'POST', headers, body: JSON.stringify(body) }
+        {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json; charset=utf-8',
+                Accept: 'application/json; charset=utf-8; api-version=7.2-preview.1',
+            },
+            body: JSON.stringify(body),
+        }
     );
 
     if (!res.ok) {
@@ -58,17 +51,13 @@ export async function fetchMarketplaceStats(extensionId, token = null) {
         stats[s.statisticName] = s.value;
     }
 
-    // installCount is null (not 0) when the statistics array was absent (no auth)
-    const installCount =
-        Object.keys(stats).length > 0 ? Math.round(stats.install ?? 0) : null;
-
     return {
-        installCount,
+        installCount: Math.round(stats.install ?? 0),
         updateCount: Math.round(stats.updateCount ?? 0),
         weightedRating: stats.weightedRating ?? 0,
         ratingCount: Math.round(stats.ratingcount ?? 0),
         latestVersion: ext.versions?.[0]?.version ?? '',
-        hasStats: installCount !== null,
+        hasStats: true,
     };
 }
 

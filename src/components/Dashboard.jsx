@@ -12,7 +12,7 @@ function buildInitialState() {
     );
 }
 
-export default function Dashboard({ token, vsceToken, userLogin, onClearToken }) {
+export default function Dashboard({ token, userLogin, onClearToken }) {
     const [results, setResults] = useState(buildInitialState);
     const [fetchedAt, setFetchedAt] = useState(null);
     const [running, setRunning] = useState(false);
@@ -75,10 +75,10 @@ export default function Dashboard({ token, vsceToken, userLogin, onClearToken })
                 }
             }
 
-            // VS Code Marketplace (pass Azure DevOps PAT when available)
+            // VS Code Marketplace — public, no auth required
             if (repo.vsceId) {
                 try {
-                    marketplace = await fetchMarketplaceStats(repo.vsceId, vsceToken);
+                    marketplace = await fetchMarketplaceStats(repo.vsceId);
                 } catch {
                     // silently fail — CORS or API issue
                 }
@@ -99,7 +99,7 @@ export default function Dashboard({ token, vsceToken, userLogin, onClearToken })
         await Promise.allSettled(tasks);
         setFetchedAt(new Date());
         setRunning(false);
-    }, [token, vsceToken, running]);
+    }, [token, running]);
 
     // Fetch on first render
     const [hasFetched, setHasFetched] = useState(false);
@@ -157,7 +157,7 @@ export default function Dashboard({ token, vsceToken, userLogin, onClearToken })
 
             <div className="max-w-7xl mx-auto px-4 py-6">
                 {/* Summary tables */}
-                <SummaryTable entries={entries} hasVsceToken={!!vsceToken} />
+                <SummaryTable entries={entries} />
 
                 {/* Cards grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
