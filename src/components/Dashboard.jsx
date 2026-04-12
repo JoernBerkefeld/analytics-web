@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import { REPOS } from '../data/repos.js';
 import { fetchRepoStats } from '../api/github.js';
-import { fetchNpmStats } from '../api/npm.js';
+import { fetchNpmStats, fetchBatchDownloads } from '../api/npm.js';
 import { fetchMarketplaceStats, fetchOpenVsxStats } from '../api/marketplace.js';
 import PackageCard from './PackageCard.jsx';
 import SummaryTable from './SummaryTable.jsx';
@@ -27,6 +27,25 @@ export default function Dashboard({ token, vsceToken, userLogin, onClearToken })
         setResults(buildInitialState());
         setFetchedAt(null);
 
+        // Pre-fetch all npm download totals in 3 batch requests (one per period)
+        // instead of 3 × N individual requests.
+        const npmPackages = REPOS.filter((r) => r.npmPackage).map((r) => r.npmPackage);
+        const [dlWeek, dlMonth, dlYear] = await Promise.all([
+            fetchBatchDownloads(npmPackages, 'last-week').catch(() => ({})),
+            fetchBatchDownloads(npmPackages, 'last-month').catch(() => ({})),
+            fetchBatchDownloads(npmPackages, 'last-year').catch(() => ({})),
+        ]);
+        const preloadedDownloads = Object.fromEntries(
+            npmPackages.map((pkg) => [
+                pkg,
+                {
+                    lastWeek: dlWeek[pkg] ?? 0,
+                    lastMonth: dlMonth[pkg] ?? 0,
+                    lastYear: dlYear[pkg] ?? 0,
+                },
+            ])
+        );
+
         const tasks = REPOS.map(async (repo) => {
             update(repo.key, { status: 'loading' });
 
@@ -44,10 +63,13 @@ export default function Dashboard({ token, vsceToken, userLogin, onClearToken })
                 }
             }
 
-            // npm
+            // npm — downloads already pre-fetched; only per-version + registry remain
             if (repo.npmPackage) {
                 try {
-                    npm = await fetchNpmStats(repo.npmPackage);
+                    npm = await fetchNpmStats(
+                        repo.npmPackage,
+                        preloadedDownloads[repo.npmPackage] ?? null
+                    );
                 } catch {
                     // silently fail
                 }
