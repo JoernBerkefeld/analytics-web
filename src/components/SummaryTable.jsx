@@ -136,9 +136,11 @@ function SortableTable({ title, cols, rows, defaultSort, defaultDir = 'desc', ba
                                             col.align === 'right' ? 'text-right' : 'text-left font-sans font-medium text-gray-200'
                                         }`}
                                     >
-                                        {col.key === 'latestVersion' && row[col.key]
-                                            ? `v${row[col.key]}`
-                                            : fmt(row[col.key])}
+                                        {col.key === 'label'
+                                            ? row[col.key]
+                                            : col.key === 'latestVersion' && row[col.key]
+                                              ? `v${row[col.key]}`
+                                              : fmt(row[col.key])}
                                     </td>
                                 ))}
                             </tr>
