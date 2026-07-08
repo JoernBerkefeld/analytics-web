@@ -58,6 +58,15 @@ export const REPOS = [
         openVsx: null,
     },
     {
+        key: 'eslint-config-ssjs',
+        label: 'eslint-config-ssjs',
+        owner: 'JoernBerkefeld',
+        repo: 'eslint-config-ssjs',
+        npmPackage: 'eslint-config-ssjs',
+        vsceId: null,
+        openVsx: null,
+    },
+    {
         key: 'eslint-plugin-sfmc',
         label: 'eslint-plugin-sfmc',
         owner: 'JoernBerkefeld',
