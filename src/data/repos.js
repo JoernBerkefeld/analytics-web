@@ -67,6 +67,15 @@ export const REPOS = [
         openVsx: null,
     },
     {
+        key: 'eslint-plugin-mcdev',
+        label: 'eslint-plugin-mcdev',
+        owner: 'JoernBerkefeld',
+        repo: 'eslint-plugin-mcdev',
+        npmPackage: 'eslint-plugin-mcdev',
+        vsceId: null,
+        openVsx: null,
+    },
+    {
         key: 'eslint-plugin-sfmc',
         label: 'eslint-plugin-sfmc',
         owner: 'JoernBerkefeld',
