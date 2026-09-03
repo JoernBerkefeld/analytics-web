@@ -259,4 +259,14 @@ export const REPOS = [
         openVsx: null,
         category: 'app',
     },
+    {
+        key: 'sfmc-cookbook',
+        label: 'SFMC-Cookbook',
+        owner: 'JoernBerkefeld',
+        repo: 'SFMC-Cookbook',
+        npmPackage: null,
+        vsceId: null,
+        openVsx: null,
+        category: 'app',
+    },
 ];
