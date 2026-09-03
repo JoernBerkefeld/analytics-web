@@ -56,10 +56,10 @@ function extractVsceRow(entry) {
     };
 }
 
-// ─── Desktop apps summary table ──────────────────────────────────────────────
+// ─── Apps & sites summary table (GitHub-only entries, category: 'app') ───────
 
 const APP_COLS = [
-    { key: 'label', label: 'App', align: 'left' },
+    { key: 'label', label: 'Project', align: 'left' },
     { key: 'stars', label: '⭐', align: 'right' },
     { key: 'views14d', label: 'Views 14d', align: 'right' },
     { key: 'clones14d', label: 'Clones 14d', align: 'right' },
@@ -217,7 +217,7 @@ export default function SummaryTable({ entries }) {
                 defaultSort="marketplaceInstalls"
             />
             <SortableTable
-                title="Desktop Apps"
+                title="Apps & Sites"
                 cols={APP_COLS}
                 rows={appRows}
                 defaultSort="views14d"
