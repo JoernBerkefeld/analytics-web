@@ -148,6 +148,15 @@ export const REPOS = [
         openVsx: null,
     },
     {
+        key: 'sf-plugin-cms',
+        label: 'sf-plugin-cms',
+        owner: 'JoernBerkefeld',
+        repo: 'sf-plugin-cms',
+        npmPackage: 'sf-plugin-cms',
+        vsceId: null,
+        openVsx: null,
+    },
+    {
         key: 'sfmc-dataloader',
         label: 'sfmc-dataloader',
         owner: 'JoernBerkefeld',
