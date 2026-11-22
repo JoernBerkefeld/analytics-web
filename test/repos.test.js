@@ -21,7 +21,58 @@ const expectedPlugins = [
         vsceId: null,
         openVsx: null,
     },
+    {
+        key: 'sf-plugin-data',
+        label: 'sf-plugin-data',
+        owner: 'JoernBerkefeld',
+        repo: 'sf-plugin-data',
+        npmPackage: 'sf-plugin-data',
+        vsceId: null,
+        openVsx: null,
+    },
 ];
+
+const expectedOthers = [
+    {
+        key: 'salesforce-data360-rules',
+        label: 'salesforce-data360-rules',
+        owner: 'JoernBerkefeld',
+        repo: 'salesforce-data360-rules',
+        npmPackage: 'salesforce-data360-rules',
+        vsceId: null,
+        openVsx: null,
+    },
+    {
+        key: 'waba-devtools',
+        label: 'waba-devtools',
+        owner: 'JoernBerkefeld',
+        repo: 'waba-devtools',
+        npmPackage: 'waba-devtools',
+        vsceId: null,
+        openVsx: null,
+    },
+    {
+        key: 'vscode-waba-devtools',
+        label: 'vscode-waba-devtools',
+        owner: 'JoernBerkefeld',
+        repo: 'vscode-waba-devtools',
+        npmPackage: null,
+        vsceId: 'joernberkefeld.waba-devtools',
+        openVsx: { namespace: 'joernberkefeld', name: 'waba-devtools' },
+    },
+];
+
+test('tracks the Data 360 rules package and the WABA tools', () => {
+    for (const expected of expectedOthers) {
+        const entry = REPOS.find((repo) => repo.key === expected.key);
+        assert.deepEqual(entry, expected);
+    }
+});
+
+test('has unique keys', () => {
+    const keys = REPOS.map((repo) => repo.key);
+    assert.equal(new Set(keys).size, keys.length);
+});
 
 test('tracks Salesforce CLI plugins through GitHub and npm', () => {
     for (const expectedPlugin of expectedPlugins) {
