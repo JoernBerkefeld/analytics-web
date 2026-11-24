@@ -106,6 +106,16 @@ export default function PackageCard({ entry }) {
                             <Badge color="teal">OVSX</Badge>
                         </a>
                     )}
+                    {chromeStoreId && (
+                        <a
+                            href={`https://chromewebstore.google.com/detail/${chromeStoreId}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            title="Chrome Web Store"
+                        >
+                            <Badge color="green">CWS</Badge>
+                        </a>
+                    )}
                 </div>
             </div>
 
