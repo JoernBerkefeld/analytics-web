@@ -61,6 +61,16 @@ const expectedOthers = [
         openVsx: { namespace: 'joernberkefeld', name: 'waba-devtools' },
     },
     {
+        key: 'waba-template-manager',
+        label: 'waba-template-manager',
+        owner: 'JoernBerkefeld',
+        repo: 'waba-template-manager',
+        npmPackage: null,
+        vsceId: null,
+        openVsx: null,
+        category: 'app',
+    },
+    {
         key: 'vscode-sf-cli-plus',
         label: 'vscode-sf-cli-plus',
         owner: 'JoernBerkefeld',

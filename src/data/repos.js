@@ -294,6 +294,16 @@ export const REPOS = [
         category: 'app',
     },
     {
+        key: 'waba-template-manager',
+        label: 'waba-template-manager',
+        owner: 'JoernBerkefeld',
+        repo: 'waba-template-manager',
+        npmPackage: null,
+        vsceId: null,
+        openVsx: null,
+        category: 'app',
+    },
+    {
         key: 'chrome-sfmc-ux-tools',
         label: 'SFMC UX Tools (Chrome)',
         owner: 'JoernBerkefeld',
