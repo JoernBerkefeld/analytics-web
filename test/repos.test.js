@@ -60,9 +60,18 @@ const expectedOthers = [
         vsceId: 'joernberkefeld.waba-devtools',
         openVsx: { namespace: 'joernberkefeld', name: 'waba-devtools' },
     },
+    {
+        key: 'vscode-sf-cli-plus',
+        label: 'vscode-sf-cli-plus',
+        owner: 'JoernBerkefeld',
+        repo: 'vscode-sf-cli-plus',
+        npmPackage: null,
+        vsceId: 'joernberkefeld.sf-cli-plus',
+        openVsx: { namespace: 'joernberkefeld', name: 'sf-cli-plus' },
+    },
 ];
 
-test('tracks the Data 360 rules package and the WABA tools', () => {
+test('tracks the Data 360 rules package, the WABA tools and the SF CLI Plus extension', () => {
     for (const expected of expectedOthers) {
         const entry = REPOS.find((repo) => repo.key === expected.key);
         assert.deepEqual(entry, expected);

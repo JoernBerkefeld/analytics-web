@@ -175,6 +175,15 @@ export const REPOS = [
         openVsx: null,
     },
     {
+        key: 'vscode-sf-cli-plus',
+        label: 'vscode-sf-cli-plus',
+        owner: 'JoernBerkefeld',
+        repo: 'vscode-sf-cli-plus',
+        npmPackage: null,
+        vsceId: 'joernberkefeld.sf-cli-plus',
+        openVsx: { namespace: 'joernberkefeld', name: 'sf-cli-plus' },
+    },
+    {
         key: 'waba-devtools',
         label: 'waba-devtools',
         owner: 'JoernBerkefeld',
