@@ -1,3 +1,5 @@
+import ChromeStoreSection from './ChromeStoreSection.jsx';
+
 function fmt(n) {
     if (n == null || n === '') return '—';
     return Number(n).toLocaleString('en-US');
@@ -51,7 +53,7 @@ function Section({ title, color, children }) {
 }
 
 export default function PackageCard({ entry }) {
-    const { label, owner, repo, npmPackage, vsceId, openVsx, result } = entry;
+    const { label, owner, repo, npmPackage, vsceId, openVsx, chromeStoreId, result } = entry;
     const { status, github, npm, marketplace, openVsxData } = result ?? {};
 
     const isLoading = status === 'loading' || status === 'pending';
@@ -229,6 +231,9 @@ export default function PackageCard({ entry }) {
                     )}
                 </>
             )}
+
+            {/* Chrome Web Store — outside the block above, so a Refresh keeps its numbers */}
+            {chromeStoreId && <ChromeStoreSection itemId={chromeStoreId} />}
         </div>
     );
 }

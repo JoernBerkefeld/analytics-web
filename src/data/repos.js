@@ -285,6 +285,17 @@ export const REPOS = [
         category: 'app',
     },
     {
+        key: 'chrome-sfmc-ux-tools',
+        label: 'SFMC UX Tools (Chrome)',
+        owner: 'JoernBerkefeld',
+        repo: 'chrome-sfmc-ux-tools',
+        npmPackage: null,
+        vsceId: null,
+        openVsx: null,
+        chromeStoreId: 'icngdchkbniamebbmhebciohjimfmjej',
+        category: 'app',
+    },
+    {
         key: 'ssjs.guide',
         label: 'ssjs.guide',
         owner: 'JoernBerkefeld',
